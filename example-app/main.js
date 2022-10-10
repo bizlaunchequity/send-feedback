@@ -2,6 +2,8 @@
 
 const electron = require('electron');
 const { app, BrowserWindow } = electron;
+const mainRemote = require('@electron/remote/main');
+mainRemote.initialize();
 
 let demoWin = null;
 app.on('ready', () => {
@@ -9,9 +11,14 @@ app.on('ready', () => {
     width: 1150,
     height: 600,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true,
+      backgroundThrottling: false
     }
   });
+  mainRemote.enable(demoWin.webContents)
+
 
   demoWin.webContents.openDevTools();
   demoWin.loadURL(`file:///${__dirname}/send-feedback.html`);
